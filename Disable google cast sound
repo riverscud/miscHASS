@@ -1,0 +1,36 @@
+alias: Disable google cast sound
+sequence:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: media_player.nest_speakers
+            state: "off"
+        sequence:
+          - service: media_player.volume_set
+            target:
+              entity_id: media_player.nest_speakers
+            data:
+              volume_level: 0.05
+          - service: media_player.turn_on
+            target:
+              entity_id: media_player.nest_speakers
+            data: {}
+          - wait_template: "{{ is_state('media_player.nest_speakers', 'idle') }}"
+      - conditions:
+          - condition: state
+            entity_id: media_player.nest_speakers
+            state: idle
+        sequence: []
+    default: []
+  - service: media_player.volume_set
+    target:
+      entity_id: media_player.nest_speakers
+    data:
+      volume_level: 0.47
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.nest_speakers
+    data:
+      media_content_id: $AUDIO_URL
+      media_content_type: audio
+mode: single
